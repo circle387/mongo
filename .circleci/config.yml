@@ -23,10 +23,19 @@ jobs:
           name: Generate config
           command: |
             tools/circle-generate-config.sh /var/lib/circleci-runner/workdir/generated_config.yml
+      - run:
+          name: Check if generated_config.yml exists
+          command: |
+            if [ -f /var/lib/circleci-runner/workdir/generated_config.yml ]; then
+              echo "File exists!"
+            else
+              echo "File not found!"
+              exit 1
+            fi
       - persist_to_workspace:  # Persist workdir to workspace so it is not lost
-          root: /var/lib/circleci-runner/workdir
+          root: /var/lib/circleci-runner
           paths:
-            - generated_config.yml
+            - workdir/generated_config.yml
       - continuation/continue:
           configuration_path: /var/lib/circleci-runner/workdir/generated_config.yml
 
